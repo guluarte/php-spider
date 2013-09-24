@@ -108,10 +108,12 @@ class VideosChistososJson implements PersistenceHandler, \Iterator
           'title' => $title,
           'youtube_url' =>  $youtube,
           'categories' => $tags,
+          'descripcion' => $descripcion,
           'postslug' => $slug,
           );
 
-
+         #var_dump($data);
+         #die();
          file_put_contents($fileName, json_encode($data)."\n", FILE_APPEND | LOCK_EX);     
 
      }
