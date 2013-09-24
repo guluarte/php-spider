@@ -79,11 +79,13 @@ class VideosChistososJson implements PersistenceHandler, \Iterator
         $title = trim( $resource->getCrawler()->filterXpath('//title')->text());
         $descripcion = trim( $resource->getCrawler()->filterXpath("//*[@id=\"izquierda\"]/div//article/div/p")->text() );
         $tags = $resource->getCrawler()
-          ->filterXpath("//*[@id=\"izquierda\"]/div//article/div/div//ul/li/a")
-          ->each(function ($node, $i) {
-              return $node->text();
-          });
-        $youtube = $resource->getCrawler()->filterXpath("//*[@id=\"player1\"]");
+        ->filterXpath("//*[@id=\"izquierda\"]/div//article/div/div//ul/li/a")
+        ->each(function ($node, $i) {
+          return $node->text();
+        });
+        $youtube = $resource->getCrawler()
+          ->filterXpath("//*[@id=\"izquierda\"]/div//iframe")
+          ->attr('src');
 
         echo $title."\n";
         echo $descripcion."\n";
@@ -91,6 +93,7 @@ class VideosChistososJson implements PersistenceHandler, \Iterator
         var_dump($tags);
         var_dump($youtube);
 
+        die();
       } catch(\Exception $e) {
 
       }
