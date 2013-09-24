@@ -64,15 +64,18 @@ class VideosChistososJson implements PersistenceHandler, \Iterator
       $rawResponse = $resource->getResponse()->__toString();
       $this->totalSizePersisted += $file->fwrite($rawResponse);
     }
-
+    private function getTags($crawler) {
+      foreach ($crawler as $node) {
+          $tags[] = $node->text();
+    }
     private function saveJsonInfo(Resource $resource) {
       $fileName = $this->getResultPath() . "lolzbook.json";
       $data = array();
       $categories = array();
       try {
         $title = trim( $resource->getCrawler()->filterXpath('//title')->text());
-        $descripcion = $resource->getCrawler()->filterXpath("//*[@id=\"izquierda\"]/div//article/div/p")->text();
-        $tags = $resource->getCrawler()->filterXpath("//*[@id=\"izquierda\"]/div//article/div/div//ul/li/a");
+        $descripcion = trim( $resource->getCrawler()->filterXpath("//*[@id=\"izquierda\"]/div//article/div/p")->text() );
+        $tags = $this->getTags($resource->getCrawler()->filterXpath("//*[@id=\"izquierda\"]/div//article/div/div//ul/li/a"));
         $youtube = $resource->getCrawler()->filterXpath("//*[@id=\"player1\"]");
 
         echo $title."\n";
