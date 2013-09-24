@@ -80,7 +80,7 @@ class VideosChistososJson implements PersistenceHandler, \Iterator
         $descripcion = trim( $resource->getCrawler()->filterXpath("//*[@id=\"izquierda\"]/div//article/div/p")->text() );
         $tags = $resource->getCrawler()
           ->filterXpath("//*[@id=\"izquierda\"]/div//article/div/div//ul/li/a")
-          ->each(function (crawler $node, $i) {
+          ->each(function ($node, $i) {
               return $node->text();
           });
         $youtube = $resource->getCrawler()->filterXpath("//*[@id=\"player1\"]");
