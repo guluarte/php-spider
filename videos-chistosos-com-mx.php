@@ -30,9 +30,11 @@ $spider->setMaxQueueSize(1000000);
 // We add an URI discoverer. Without it, the spider wouldn't get past the seed resource.
 #$spider->addDiscoverer(new XPathExpressionDiscoverer("//*[@id=\"videos\"]/div//article/h2/a"));
 #$spider->addDiscoverer(new XPathExpressionDiscoverer("//*[@id=\"videos\"]/div//p/a"));
+#$spider->addDiscoverer(new XPathExpressionDiscoverer("//*[@id=\"masvideos\"]/div//a"));
+#
 
 #Pagination
-$spider->addDiscoverer(new XPathExpressionDiscoverer("//*[@id=\"izquierda\"]/div//ol/li//a"));
+$spider->addDiscoverer(new XPathExpressionDiscoverer("//a"));
 
 // Let's tell the spider to save all found resources on the filesystem
 $spider->setPersistenceHandler(
