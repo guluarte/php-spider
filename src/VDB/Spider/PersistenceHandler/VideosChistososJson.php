@@ -72,7 +72,9 @@ class VideosChistososJson implements PersistenceHandler, \Iterator
       return $tags;
     }
     private function saveJsonInfo(Resource $resource) {
-      $fileName = $this->getResultPath() . "lolzbook.json";
+
+
+      $fileName = $this->getResultPath() . "results.json";
       $data = array();
       $categories = array();
       try {
@@ -84,50 +86,17 @@ class VideosChistososJson implements PersistenceHandler, \Iterator
           return $node->text();
         });
         $youtube = $resource->getCrawler()
-          ->filterXpath("//*[@id=\"izquierda\"]/div//iframe")
-          ->attr('src');
+        ->filterXpath("//*[@id=\"izquierda\"]/div//iframe")
+        ->attr('src');
 
-        echo $title."\n";
-        echo $descripcion."\n";
-        
-        var_dump($tags);
-        var_dump($youtube);
-
-        die();
       } catch(\Exception $e) {
 
       }
 
-
-      if ( is_object( $articleClasses )) {
-        $clases = explode(" ", $articleClasses->attr('class'));
-        foreach ($clases as $class) {
-          if ( strstr($class, "category")) {
-
-            $category = str_replace("category-", null, $class);
-            if (!strstr($category, "-")) {
-              $categories[] = $category;
-            }
-          }
-        }
-      }
-    //category-cute category-funny category-random
-      if ( !strstr($title, "Lolz Book") && is_object($imgNode) && is_object( $articleClasses ) && count($categories) > 0) {
+      if ( $title != "" && $descripcion != "" $youtube != "") {
         echo "DOCUMENT: ".$resource->getUri()->toString()."\n";
-        $imgPath = $imgNode->attr('src');
-        $documentUrl = $resource->getUri()->toString();
+
         $documentHost = parse_url($documentUrl, PHP_URL_HOST);
-        if (substr($imgPath , 0, 1) == '/') {
-          $imgUrl = "http://" . $documentHost . $imgPath;
-        } elseif ( substr($imgPath , 0, 4) == 'http' ) {
-          $imgUrl = $imgPath;
-        }else {
-          $imgUrl = rtrim($documentUrl, '/') . '/'. $imgPath;
-        }
-        
-        echo "IMAGEN: ".$imgUrl."\n";
-        $imgData = file_get_contents($imgUrl);
-        if ($imgData) {
 
          $this->postNum++;
          $slug = date("Y-m-d")."-".base_convert( mt_rand(0,100), 10, 32)."-".preg_replace('/[^A-Za-z0-9]/', '-', strtolower($title) );
@@ -136,24 +105,16 @@ class VideosChistososJson implements PersistenceHandler, \Iterator
          $slug = rtrim($slug, '-');
          $postNum = str_pad($this->postNum, 6, "0", STR_PAD_LEFT);
          $short = base_convert(microtime(), 10, 32);
-         $urlPath = parse_url($imgUrl, PHP_URL_PATH);
-         $imgFile = pathinfo( $urlPath , PATHINFO_FILENAME);
-         $imgFile = strtolower($imgFile);
-         $imgExtension = pathinfo($urlPath, PATHINFO_EXTENSION);
-         $imgFile = $slug . '.'. $imgExtension;
-         file_put_contents($this->getResultPath() . 'images/'. $imgFile, $imgData);
 
-         $postFilename =  $slug.".md";
          $data = array(
           'title' => $title,
-          'src' =>  $imgUrl,
-          'filename' => $imgFile,
-          'categories' => $categories,
+          'youtube_url' =>  $youtube,
+          'categories' => $tags,
           'postslug' => $slug,
-          'postfilename' => $postFilename,
           );
+
+
          file_put_contents($fileName, json_encode($data)."\n", FILE_APPEND | LOCK_EX);     
-       }
 
      }
 
