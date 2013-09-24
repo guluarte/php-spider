@@ -66,7 +66,7 @@ class VideosChistososJson implements PersistenceHandler, \Iterator
     }
     private function getTags($crawler) {
       foreach ($crawler as $node) {
-        $tags[] = $node->text();
+        $tags[] = var_export($node, true);
       }
     }
     private function saveJsonInfo(Resource $resource) {
