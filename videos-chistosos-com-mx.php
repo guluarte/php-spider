@@ -28,9 +28,9 @@ $spider->setMaxDepth(1000);
 $spider->setMaxQueueSize(1000000);
 
 // We add an URI discoverer. Without it, the spider wouldn't get past the seed resource.
-#$spider->addDiscoverer(new XPathExpressionDiscoverer("//*[@id=\"videos\"]/div//article/h2/a"));
-#$spider->addDiscoverer(new XPathExpressionDiscoverer("//*[@id=\"videos\"]/div//p/a"));
-#$spider->addDiscoverer(new XPathExpressionDiscoverer("//*[@id=\"masvideos\"]/div//a"));
+$spider->addDiscoverer(new XPathExpressionDiscoverer("//*[@id=\"videos\"]/div//article/h2/a"));
+$spider->addDiscoverer(new XPathExpressionDiscoverer("//*[@id=\"videos\"]/div//p/a"));
+$spider->addDiscoverer(new XPathExpressionDiscoverer("//*[@id=\"masvideos\"]/div//a"));
 #
 
 #Pagination
