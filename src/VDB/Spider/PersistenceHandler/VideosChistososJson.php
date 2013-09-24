@@ -66,7 +66,8 @@ class VideosChistososJson implements PersistenceHandler, \Iterator
     }
     private function getTags($crawler) {
       foreach ($crawler as $node) {
-          $tags[] = $node->text();
+        $tags[] = $node->text();
+      }
     }
     private function saveJsonInfo(Resource $resource) {
       $fileName = $this->getResultPath() . "lolzbook.json";
