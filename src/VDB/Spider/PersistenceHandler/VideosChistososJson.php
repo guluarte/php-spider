@@ -96,8 +96,6 @@ class VideosChistososJson implements PersistenceHandler, \Iterator
       if ( $title != "" && $descripcion != "" && $youtube != "") {
         echo "DOCUMENT: ".$resource->getUri()->toString()."\n";
 
-        $documentHost = parse_url($documentUrl, PHP_URL_HOST);
-
          $this->postNum++;
          $slug = date("Y-m-d")."-".base_convert( mt_rand(0,100), 10, 32)."-".preg_replace('/[^A-Za-z0-9]/', '-', strtolower($title) );
          $slug = preg_replace("/-+/", "-", $slug); 
