@@ -107,6 +107,7 @@ class VideosDeTerrorJson implements PersistenceHandler, \Iterator
          $data = array(
           'title' => $title,
           'youtube_url' =>  $youtube,
+          'descripcion' => $descripcion,
           'categories' => $tags,
           'postslug' => $slug,
           );
