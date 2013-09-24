@@ -93,7 +93,7 @@ class VideosChistososJson implements PersistenceHandler, \Iterator
 
       }
 
-      if ( $title != "" && $descripcion != "" $youtube != "") {
+      if ( $title != "" && $descripcion != "" && $youtube != "") {
         echo "DOCUMENT: ".$resource->getUri()->toString()."\n";
 
         $documentHost = parse_url($documentUrl, PHP_URL_HOST);
