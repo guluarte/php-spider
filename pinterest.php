@@ -5,29 +5,32 @@ use Symfony\Component\DomCrawler\Crawler;
 
 $fileUrlsToCrawl = "./data/pins-26092013.csv";
 $jsonFile = "./data/pins-26092013.json";
+$downloadDir = "./data/pins-26092013/";
 
 $url = "http://www.pinterest.com/pin/149604018845108731/";
 
 
 $fp = fopen($fileUrlsToCrawl, 'r');
+$fpDestination = fopen($jsonFile, 'a+');
 
 while (!feof($fp)) {
 	$url = trim( fgets($fp) );
 	echo $url.PHP_EOL;
 	if ($url) {
 		try {
-			$array = getMeta($url);
+			$array = getMeta($url, $downloadDir);
 		} catch(\Exception $e) {
 			echo $e->getMessage().PHP_EOL;
 		}
 		
 	}	
-	$jsonArray = json_encode($array);
-	file_put_contents($jsonFile, $jsonArray);
+	$jsonArray = json_encode($array). PHP_EOL;
+	fwrite($fpDestination, $jsonArray);
 }
 fclose($fp);
+fclose($fpDestination);
 
-function getMeta($url) {
+function getMeta($url, $downloadDir) {
 
 	$html = getHeadHtml($url);
 
@@ -43,6 +46,19 @@ function getMeta($url) {
 
 		try {
 			$image = $crawler->filter('meta[property="og:image"]')->attr('content');
+
+			if ($image) {
+				$imageBin = getHeadHtml($image);
+				$imagePath = basename( parse_url($image, PHP_URL_PATH) );
+				$imageExtension = pathinfo($imagePath, PATHINFO_EXTENSION);
+				
+				$pinPath = str_replace("/", null, parse_url($url, PHP_URL_PATH));
+
+				$imageName = $pinPath . "." .$imageExtension;
+
+				file_put_contents($downloadDir . $imageName, $imageBin);
+			}
+			
 		} catch(\Exception $e) {
 			echo $e->getMessage().PHP_EOL;
 		}
@@ -97,7 +113,7 @@ function getMeta($url) {
 
 		#craw source pic to get more data about the picture
 		$nodeValues = array();
-		if ($source) {
+		if ($source != "") {
 			$sourceHtml = getHeadHtml($source);
 			$crawlerSource = new Crawler($sourceHtml);
 			$nodeValues = $crawlerSource->filter('title,h1,h2,h3,h4,h5')->each(function (Crawler $node, $i) {
@@ -110,6 +126,7 @@ function getMeta($url) {
 		return array(
 			'page_title' => $Pagetitle,
 			'image' => $image,
+			'local_image' => $imageName,
 			'url' => $url,
 			'pinner' => $pinner,
 			'description' => $description,
@@ -127,7 +144,9 @@ function getMeta($url) {
 function getHeadHtml($url) {
 	$ch = curl_init(); 
 	curl_setopt($ch, CURLOPT_URL, $url); 
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); 
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 	$head = curl_exec($ch); 
 	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); 
 	curl_close($ch);
