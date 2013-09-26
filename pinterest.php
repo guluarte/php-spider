@@ -7,8 +7,6 @@ $fileUrlsToCrawl = "./data/pins-26092013.csv";
 $jsonFile = "./data/pins-26092013.json";
 $downloadDir = "./data/pins-26092013/";
 
-$url = "http://www.pinterest.com/pin/149604018845108731/";
-
 
 $fp = fopen($fileUrlsToCrawl, 'r');
 $fpDestination = fopen($jsonFile, 'a+');
@@ -142,6 +140,7 @@ function getMeta($url, $downloadDir) {
 }
 
 function getHeadHtml($url) {
+	echo "Downloading [".$url."]".PHP_EOL;
 	$ch = curl_init(); 
 	curl_setopt($ch, CURLOPT_URL, $url); 
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -155,6 +154,7 @@ function getHeadHtml($url) {
 	} 
 
 	if($httpCode < 400) { 
+		echo "OK".PHP_EOL;
 		return $head; 
 	} 
 	return false;
