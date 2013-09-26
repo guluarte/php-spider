@@ -14,7 +14,7 @@ use VDB\Spider\Spider;
 require_once('bootstrap.php');
 
 // The URI we want to start crawling with
-$domain = 'videosyamor.com';
+$domain = 'pinterest.com';
 $seed = 'http://'.$domain.'/';
 
 // We want to allow all subdomains of dmoz.org
@@ -92,15 +92,3 @@ echo "\n\nSPIDER ID: " . $spiderId;
 echo "\n  ENQUEUED:  " . count($queued);
 echo "\n  SKIPPED:   " . count($filtered);
 echo "\n  FAILED:    " . count($failed);
-
-// With the information from some of plugins and listeners, we can determine some metrics
-$peakMem = round(memory_get_peak_usage(true) / 1024 / 1024, 2);
-$totalTime = round(microtime(true) - $start, 2);
-$totalDelay = round($politenessPolicyEventListener->totalDelay / 1000 / 1000, 2);
-echo "\n\nMETRICS:";
-echo "\n  PEAK MEM USAGE:       " . $peakMem . 'MB';
-echo "\n  TOTAL TIME:           " . $totalTime . 's';
-echo "\n  REQUEST TIME:         " . $timerPlugin->getTotal() . 's';
-echo "\n  POLITENESS WAIT TIME: " . $totalDelay . 's';
-echo "\n  PROCESSING TIME:      " . ($totalTime - $timerPlugin->getTotal() - $totalDelay) . 's';
-
