@@ -6,7 +6,7 @@ use Symfony\Component\DomCrawler\Crawler;
 $fileUrlsToCrawl = "./data/pins-26092013.csv";
 $jsonFile = "./data/pins-26092013.json";
 $downloadDir = "./data/pins-26092013/";
-
+@mkdir($downloadDir);
 
 $fp = fopen($fileUrlsToCrawl, 'r');
 $fpDestination = fopen($jsonFile, 'a+');
