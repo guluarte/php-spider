@@ -4,7 +4,7 @@ require_once('bootstrap.php');
 use Symfony\Component\DomCrawler\Crawler;
 
 $fileUrlsToCrawl = "./data/pins-26092013.csv";
-$jsonFile = "./data/pins-26092013.json";
+$jsonFile = "./data/pins.json";
 $downloadDir = "./data/pins-26092013/";
 @mkdir($downloadDir);
 
@@ -14,7 +14,7 @@ $fpDestination = fopen($jsonFile, 'a+');
 while (!feof($fp)) {
 	$url = trim( fgets($fp) );
 	echo $url.PHP_EOL;
-	if ($url) {
+	if ($url != "") {
 		try {
 			$array = getMeta($url, $downloadDir);
 		} catch(\Exception $e) {
@@ -114,7 +114,7 @@ function getMeta($url, $downloadDir) {
 		if ($source != "") {
 			$sourceHtml = getHeadHtml($source);
 			$crawlerSource = new Crawler($sourceHtml);
-			$nodeValues = $crawlerSource->filter('title,h1,h2,h3,h4,h5')->each(function (Crawler $node, $i) {
+			$nodeValues = $crawlerSource->filter('title,h1,h2,h3,h4,h5,p')->each(function (Crawler $node, $i) {
 				return trim($node->text());
 			});
 			
