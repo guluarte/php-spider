@@ -124,16 +124,16 @@ function getMeta($url, $downloadDir) {
 		$pinner_data = array();
 		if ($pinner) {
 			$sourceHtml = getHeadHtml($pinner);
-			echo $sourceHtml;
+
 			$crawlerSource = new Crawler($sourceHtml);
 			
-			$pinner_data['followers'] = $crawler->filter('meta[property="pinterestapp:followers"]')->attr('content');
-			$pinner_data['following'] = $crawler->filter('meta[property="pinterestapp:following"]')->attr('content');
-			$pinner_data['boards'] = $crawler->filter('meta[property="pinterestapp:boards"]')->attr('content');
-			$pinner_data['pins'] = $crawler->filter('meta[property="pinterestapp:pins"]')->attr('content');
+			$pinner_data['followers'] = $crawlerSource->filter('meta[property="pinterestapp:followers"]')->attr('content');
+			$pinner_data['following'] = $crawlerSource->filter('meta[property="pinterestapp:following"]')->attr('content');
+			$pinner_data['boards'] = $crawlerSource->filter('meta[property="pinterestapp:boards"]')->attr('content');
+			$pinner_data['pins'] = $crawlerSource->filter('meta[property="pinterestapp:pins"]')->attr('content');
 
-			$pinner_data['title'] = $crawler->filter('meta[property="og:title"]')->attr('content');
-			$pinner_data['description'] = $crawler->filter('meta[property="og:description"]')->attr('content');
+			$pinner_data['title'] = $crawlerSource->filter('meta[property="og:title"]')->attr('content');
+			$pinner_data['description'] = $crawlerSource->filter('meta[property="og:description"]')->attr('content');
 		}
 		
 
