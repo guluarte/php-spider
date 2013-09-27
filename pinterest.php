@@ -124,6 +124,7 @@ function getMeta($url, $downloadDir) {
 		$pinner_data = array();
 		if ($pinner) {
 			$sourceHtml = getHeadHtml($pinner);
+			echo $sourceHtml;
 			$crawlerSource = new Crawler($sourceHtml);
 			
 			$pinner_data['followers'] = $crawler->filter('meta[property="pinterestapp:followers"]')->attr('content');
