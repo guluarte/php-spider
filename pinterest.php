@@ -119,6 +119,23 @@ function getMeta($url, $downloadDir) {
 			});
 			
 		} 
+
+		#scrap the pinner
+		$pinner_data = array();
+		if ($pinner) {
+			$sourceHtml = getHeadHtml($source);
+			$crawlerSource = new Crawler($pinner);
+			
+			$pinner_data['followers'] = $crawler->filter('meta[property="pinterestapp:followers"]')->attr('content');
+			$pinner_data['following'] = $crawler->filter('meta[property="pinterestapp:following"]')->attr('content');
+			$pinner_data['boards'] = $crawler->filter('meta[property="pinterestapp:boards"]')->attr('content');
+			$pinner_data['pins'] = $crawler->filter('meta[property="pinterestapp:pins"]')->attr('content');
+
+			$pinner_data['title'] = $crawler->filter('meta[property="og:title"]')->attr('content');
+			$pinner_data['description'] = $crawler->filter('meta[property="og:description"]')->attr('content');
+		}
+		
+
 		
 
 		return array(
@@ -127,6 +144,7 @@ function getMeta($url, $downloadDir) {
 			'local_image' => $imageName,
 			'url' => $url,
 			'pinner' => $pinner,
+			'pinner_data' => $pinner_data,
 			'description' => $description,
 			'see_also' => $seeAlso,
 			'repins' => $repins,
@@ -148,7 +166,7 @@ function getHeadHtml($url) {
 	curl_setopt($ch, CURLOPT_TIMEOUT, 20);
 	curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-	 
+
 	$head = curl_exec($ch); 
 	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); 
 	curl_close($ch);
