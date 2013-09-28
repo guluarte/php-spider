@@ -1,12 +1,16 @@
 <?php
 require_once('bootstrap.php');
+if (!isset($argv[1])) {
+	die("Use php5 pinterest.php file" .PHP_EOL);
+}
 
+$fileSource = $argv[1];
 
 use Symfony\Component\DomCrawler\Crawler;
 
-$fileUrlsToCrawl = "./data/pinterest-halloweendecorations27092013.csv";
-$jsonFile = "./data/pinterest-halloweendecorations27092013.json";
-$downloadDir = "./data/pinterest-halloweendecorations27092013/";
+$fileUrlsToCrawl = "./data/".$fileSource;
+$jsonFile = "./data/".$fileSource;
+$downloadDir = "./data/". str_replace(".", null, $fileSource);
 @mkdir($downloadDir);
 
 $fp = fopen($fileUrlsToCrawl, 'r');
