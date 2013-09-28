@@ -9,8 +9,8 @@ $fileSource = $argv[1];
 use Symfony\Component\DomCrawler\Crawler;
 
 $fileUrlsToCrawl = "./data/".$fileSource;
-$jsonFile = "./data/".$fileSource;
-$downloadDir = "./data/". str_replace(".", null, $fileSource);
+$jsonFile = "./data/".$fileSource.".json";
+$downloadDir = "./data/". str_replace(".", null, $fileSource)."/";
 @mkdir($downloadDir);
 
 $fp = fopen($fileUrlsToCrawl, 'r');
