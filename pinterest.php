@@ -1,5 +1,6 @@
 <?php
 require_once('bootstrap.php');
+require 'lib/Readability.inc.php';
 if (!isset($argv[1])) {
 	die("Use php5 pinterest.php file" .PHP_EOL);
 }
@@ -11,6 +12,7 @@ use Symfony\Component\DomCrawler\Crawler;
 $fileUrlsToCrawl = "./data/".$fileSource;
 $jsonFile = "./data/".$fileSource.".json";
 $downloadDir = "./data/". str_replace(".", null, $fileSource)."/";
+
 @mkdir($downloadDir);
 
 $fp = fopen($fileUrlsToCrawl, 'r');
@@ -101,16 +103,16 @@ function getMeta($url, $downloadDir) {
 		$nodeValues = array();
 		
 		$nodeValues = array();
+		$sourceHtml = "";
+		$ReadabilityData = "";
 		if ($source != "" && ($repins > 10 || $likes > 10) ) {
 			$sourceHtml = getHeadHtml($source);
 			$crawlerSource = new Crawler($sourceHtml);
 			$nodeValues = $crawlerSource->filter('title,h1,h2,h3,h4,h5')->each(function (Crawler $node, $i) {
 				return trim($node->text());
-			});
-
-
-
-			
+			});			
+			$Readability     = new Readability($sourceHtml); // default charset is utf-8
+			$ReadabilityData = $Readability->getContent();
 		} 
 		
 		try {
@@ -170,7 +172,7 @@ function getMeta($url, $downloadDir) {
 			'pinboard' => $pinboard,
 			'source' => $source,
 			'source_text' => $nodeValues,
-			'source_html' => $sourceHtml,
+			'source_content' => $ReadabilityData,
 			);
 	}
 }
