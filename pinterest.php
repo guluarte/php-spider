@@ -110,6 +110,7 @@ function getMeta($url, $downloadDir) {
 			$image = $crawler->filter('meta[property="og:image"]')->attr('content');
 
 			if ($image && ($repins > 10 || $likes > 10) ) {
+				echo "Downloading images Repins:[".$repins."] Likes[".$likes."]";
 				$imageBin = getHeadHtml($image);
 				$imagePath = basename( parse_url($image, PHP_URL_PATH) );
 				$imageExtension = pathinfo($imagePath, PATHINFO_EXTENSION);
