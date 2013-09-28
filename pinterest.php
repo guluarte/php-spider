@@ -94,6 +94,7 @@ function getMeta($url, $downloadDir) {
 		}		
 
 		#craw source pic to get more data about the picture
+		$nodeValues = array();
 		/*
 		$nodeValues = array();
 		if ($source != "") {
