@@ -1,6 +1,7 @@
 <?php
 require_once('bootstrap.php');
 
+
 use Symfony\Component\DomCrawler\Crawler;
 
 $fileUrlsToCrawl = "./data/pinterest-halloweendecorations27092013.csv";
@@ -42,24 +43,7 @@ function getMeta($url, $downloadDir) {
 			echo $e->getMessage().PHP_EOL;
 		}
 
-		try {
-			$image = $crawler->filter('meta[property="og:image"]')->attr('content');
 
-			if ($image) {
-				$imageBin = getHeadHtml($image);
-				$imagePath = basename( parse_url($image, PHP_URL_PATH) );
-				$imageExtension = pathinfo($imagePath, PATHINFO_EXTENSION);
-				
-				$pinPath = str_replace("/", null, parse_url($url, PHP_URL_PATH));
-
-				$imageName = $pinPath . "." .$imageExtension;
-
-				file_put_contents($downloadDir . $imageName, $imageBin);
-			}
-			
-		} catch(\Exception $e) {
-			echo $e->getMessage().PHP_EOL;
-		}
 
 		try {
 			$pinner = $crawler->filter('meta[property="pinterestapp:pinner"]')->attr('content');
@@ -110,6 +94,7 @@ function getMeta($url, $downloadDir) {
 		}		
 
 		#craw source pic to get more data about the picture
+		/*
 		$nodeValues = array();
 		if ($source != "") {
 			$sourceHtml = getHeadHtml($source);
@@ -119,7 +104,27 @@ function getMeta($url, $downloadDir) {
 			});
 			
 		} 
+		*/
+		try {
+			$image = $crawler->filter('meta[property="og:image"]')->attr('content');
 
+			if ($image && ($repins > 10 || $likes > 10) ) {
+				$imageBin = getHeadHtml($image);
+				$imagePath = basename( parse_url($image, PHP_URL_PATH) );
+				$imageExtension = pathinfo($imagePath, PATHINFO_EXTENSION);
+				
+				$pinPath = str_replace("/", null, parse_url($url, PHP_URL_PATH));
+
+				$imageName = $pinPath . "." .$imageExtension;
+
+				file_put_contents($downloadDir . $imageName, $imageBin);
+			} else {
+				$imageName = $image;
+			}
+			
+		} catch(\Exception $e) {
+			echo $e->getMessage().PHP_EOL;
+		}
 		#scrap the pinner
 		$pinner_data = array();
 		if ($pinner) {
