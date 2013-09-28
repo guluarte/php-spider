@@ -3,9 +3,9 @@ require_once('bootstrap.php');
 
 use Symfony\Component\DomCrawler\Crawler;
 
-$fileUrlsToCrawl = "./data/pins-26092013.csv";
+$fileUrlsToCrawl = "./data/pinterest-halloweendecorations27092013.csv";
 $jsonFile = "./data/pins.json";
-$downloadDir = "./data/pins-26092013/";
+$downloadDir = "./data/pinterest-halloweendecorations27092013/";
 @mkdir($downloadDir);
 
 $fp = fopen($fileUrlsToCrawl, 'r');
