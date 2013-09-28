@@ -97,7 +97,7 @@ function getMeta($url, $downloadDir) {
 		$nodeValues = array();
 		
 		$nodeValues = array();
-		if ($source != "") {
+		if ($source != "" && ($repins > 10 || $likes > 10) ) {
 			$sourceHtml = getHeadHtml($source);
 			$crawlerSource = new Crawler($sourceHtml);
 			$nodeValues = $crawlerSource->filter('title,h1,h2,h3,h4,h5,p')->each(function (Crawler $node, $i) {
