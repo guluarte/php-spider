@@ -4,7 +4,7 @@ require_once('bootstrap.php');
 use Symfony\Component\DomCrawler\Crawler;
 
 $fileUrlsToCrawl = "./data/pinterest-halloweendecorations27092013.csv";
-$jsonFile = "./data/pins.json";
+$jsonFile = "./data/pinterest-halloweendecorations27092013.json";
 $downloadDir = "./data/pinterest-halloweendecorations27092013/";
 @mkdir($downloadDir);
 
