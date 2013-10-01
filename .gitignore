@@ -5,3 +5,5 @@ example/logs/*.log
 *.doctrinecache.php
 .DS_Store
 results/*
+data/
+data/*
