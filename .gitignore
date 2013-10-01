@@ -4,7 +4,6 @@ TODO.md
 example/logs/*.log
 *.doctrinecache.php
 .DS_Store
-results/*
+results/
 data/
-data/*
-cache/*
+cache/
