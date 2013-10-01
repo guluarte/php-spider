@@ -1,15 +1,20 @@
 <?php
 require_once('bootstrap.php');
 require 'lib/Readability.inc.php';
+use Symfony\Component\DomCrawler\Crawler;
+
+
+
 if (!isset($argv[1])) {
 	die("Use php5 pinterest.php file" .PHP_EOL);
 }
 
 $fileSource = $argv[1];
 
-use Symfony\Component\DomCrawler\Crawler;
 
 $fileUrlsToCrawl = "./data/".$fileSource;
+echo $fileUrlsToCrawl.PHP_EOL;
+
 $jsonFile = "./data/".$fileSource.".json";
 $downloadDir = "./data/". str_replace(".", null, $fileSource)."/";
 
@@ -24,6 +29,7 @@ while (!feof($fp)) {
 	if ($url != "") {
 		try {
 			$array = getMeta($url, $downloadDir);
+			var_dump($array);
 		} catch(\Exception $e) {
 			echo $e->getMessage().PHP_EOL;
 		}
@@ -144,37 +150,155 @@ function getMeta($url, $downloadDir) {
 			$sourceHtml = getHeadHtml($pinner);
 
 			$crawlerSource = new Crawler($sourceHtml);
+			try {
+				$pinner_data['followers'] = $crawlerSource->filter('meta[property="pinterestapp:followers"]')->attr('content');
+
+			}  catch(\Exception $e) {
+				echo $e->getMessage().PHP_EOL;
+			}
+			try {
+				$pinner_data['following'] = $crawlerSource->filter('meta[property="pinterestapp:following"]')->attr('content');
+
+			}  catch(\Exception $e) {
+				echo $e->getMessage().PHP_EOL;
+			}
+			try {
+				$pinner_data['boards'] = $crawlerSource->filter('meta[property="pinterestapp:boards"]')->attr('content');
+
+			}  catch(\Exception $e) {
+				echo $e->getMessage().PHP_EOL;
+			}
+			try {
+				$pinner_data['pins'] = $crawlerSource->filter('meta[property="pinterestapp:pins"]')->attr('content');
+
+			}  catch(\Exception $e) {
+				echo $e->getMessage().PHP_EOL;
+			}
+			try {
+				$pinner_data['title'] = $crawlerSource->filter('meta[property="og:title"]')->attr('content');
+
+			}  catch(\Exception $e) {
+				echo $e->getMessage().PHP_EOL;
+			}
+			try {
+				$pinner_data['description'] = $crawlerSource->filter('meta[property="og:description"]')->attr('content');
+			}  catch(\Exception $e) {
+				echo $e->getMessage().PHP_EOL;
+			}
 			
-			$pinner_data['followers'] = $crawlerSource->filter('meta[property="pinterestapp:followers"]')->attr('content');
-			$pinner_data['following'] = $crawlerSource->filter('meta[property="pinterestapp:following"]')->attr('content');
-			$pinner_data['boards'] = $crawlerSource->filter('meta[property="pinterestapp:boards"]')->attr('content');
-			$pinner_data['pins'] = $crawlerSource->filter('meta[property="pinterestapp:pins"]')->attr('content');
 
-			$pinner_data['title'] = $crawlerSource->filter('meta[property="og:title"]')->attr('content');
-			$pinner_data['description'] = $crawlerSource->filter('meta[property="og:description"]')->attr('content');
+			$pinner_data['multiBoards'] = array();
+			$multiBoards = array();
+			try {
+				$multiboardsCrawler = $crawlerSource->filter('.item')->each(function (Crawler $node, $i) use (&$multiBoards) {
+					$html = $node->html();
+					if (strstr($html, "collaborativeIcon")) {
+						
+						try {
+							echo "Multiboard found" . PHP_EOL;
+							$link = $node->filter('.boardLinkWrapper')->attr('href');
+							$multiBoards[] = 'http://www.pinterest.com'.$link;
+						}  catch(\Exception $e) {
+
+						}
+						
+
+					}
+				});
+				$pinner_data['multiBoards'] = $multiBoards;
+				var_dump($pinner_data['multiBoards']);		
+			} catch(\Exception $e) {
+	
+			}
+
+
 		}
-		
+		if ($pinboard) {
+/*
+            <meta property="og:url" name="og:url" content="http://www.pinterest.com/nsfdf/halloween/" data-app>
+            <meta property="pinterestapp:pinner" name="pinterestapp:pinner" content="http://www.pinterest.com/nsfdf/" data-app>
+            <meta property="description" name="description" content="Christy Tusing- Borgeld is using Pinterest, an online pinboard to collect and share what inspires you." data-app>
+            <meta property="pinterestapp:pins" name="pinterestapp:pins" content="276" data-app>
+            <meta property="og:type" name="og:type" content="pinterestapp:pinboard" data-app>
+            <meta property="og:description" name="og:description" content="" data-app>
+            <meta property="pinterestapp:category" name="pinterestapp:category" content="holidays_events" data-app>
+            <meta property="followers" name="followers" content="902" data-app>
+            <meta property="og:title" name="og:title" content="Halloween" data-app>
+ */
+            $sourceHtml = getHeadHtml($pinboard);
+            $crawlerSource = new Crawler($sourceHtml);
+            $board_data = array();
+            try {
+            	$board_data['followers'] = $crawlerSource->filter('meta[property="followers"]')->attr('content');
+            	var_dump($board_data);
+            } catch(\Exception $e) {
+            	echo $e->getMessage().PHP_EOL;
+            }
+            try {
+            	$board_data['owner'] = $crawlerSource->filter('meta[property="pinterestapp:pinner"]')->attr('content');
+            	var_dump($board_data);
+            } catch(\Exception $e) {
+            	echo $e->getMessage().PHP_EOL;
+            }
+            try {
+            	$board_data['pins'] = $crawlerSource->filter('meta[property="pinterestapp:pins"]')->attr('content');
 
-		
+            } catch(\Exception $e) {
+            	echo $e->getMessage().PHP_EOL;
+            }
+            try {
+            	$board_data['category'] = $crawlerSource->filter('meta[property="pinterestapp:category"]')->attr('content');
 
-		return array(
-			'page_title' => $Pagetitle,
-			'image' => $image,
-			'local_image' => $imageName,
-			'url' => $url,
-			'pinner' => $pinner,
-			'pinner_data' => $pinner_data,
-			'description' => $description,
-			'see_also' => $seeAlso,
-			'repins' => $repins,
-			'title' => $title,
-			'likes' => $likes,
-			'pinboard' => $pinboard,
-			'source' => $source,
-			'source_text' => $nodeValues,
-			'source_content' => $ReadabilityData,
-			);
-	}
+            } catch(\Exception $e) {
+            	echo $e->getMessage().PHP_EOL;
+            }
+            try {
+            	$board_data['title'] = $crawlerSource->filter('meta[property="og:title"]')->attr('content');
+
+            } catch(\Exception $e) {
+            	echo $e->getMessage().PHP_EOL;
+            }
+            try {
+            	$board_data['description'] = $crawlerSource->filter('meta[property="og:description"]')->attr('content');
+            } catch(\Exception $e) {
+            	echo $e->getMessage().PHP_EOL;
+            }
+
+            try {
+            	$board_data['num_pinners'] = $crawlerSource->filter('.moreUserCollaborators span')->text();
+            	$board_data['num_pinners']  = str_replace("+", null, $board_data['num_pinners']);
+            	$board_data['num_pinners']  = trim($board_data['num_pinners']);
+            	$board_data['num_pinners']  = (int)$board_data['num_pinners'];   
+            } catch(\Exception $e) {
+            	echo $e->getMessage().PHP_EOL;
+            	$board_data['num_pinners'] = 1;
+            } 
+            echo "Board with [".$board_data['num_pinners']."] admins and [".$board_data['followers']."] followers". PHP_EOL;     	
+
+
+        }
+
+
+
+        return array(
+        	'page_title' => $Pagetitle,
+        	'image' => $image,
+        	'local_image' => $imageName,
+        	'url' => $url,
+        	'pinner' => $pinner,
+        	'pinner_data' => $pinner_data,
+        	'description' => $description,
+        	'board_data' => $board_data,
+        	'see_also' => $seeAlso,
+        	'repins' => $repins,
+        	'title' => $title,
+        	'likes' => $likes,
+        	'pinboard' => $pinboard,
+        	'source' => $source,
+        	'source_text' => $nodeValues,
+        	'source_content' => $ReadabilityData,
+        	);
+    }
 }
 
 function getHeadHtml($url) {
