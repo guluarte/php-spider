@@ -195,7 +195,7 @@ function getMeta($url, $downloadDir) {
 					if (strstr($html, "collaborativeIcon")) {
 						
 						try {
-							echo "Multiboard found" . PHP_EOL;
+		
 							$link = $node->filter('.boardLinkWrapper')->attr('href');
 							$multiBoards[] = 'http://www.pinterest.com'.$link;
 						}  catch(\Exception $e) {
@@ -206,7 +206,7 @@ function getMeta($url, $downloadDir) {
 					}
 				});
 				$pinner_data['multiBoards'] = $multiBoards;
-				var_dump($pinner_data['multiBoards']);		
+				
 			} catch(\Exception $e) {
 	
 			}
